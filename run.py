@@ -11,44 +11,42 @@ def install_missing_packages(package_list):
     Returns:
         list: A list of successfully installed packages.
     """
-
     installed_packages = []
     for package in package_list:
         try:
             importlib.import_module(package)
+            print(f"Package {package} is already installed.")
             installed_packages.append(package)
         except ImportError:
             print(f"Installing missing package: {package}")
-            subprocess.run(["sudo", "apt-get", "install", "python3-"+package])
-            installed_packages.append(package)
+            try:
+                subprocess.run(["pip", "install", package], check=True)
+                print(f"Successfully installed {package}")
+                installed_packages.append(package)
+            except subprocess.CalledProcessError:
+                print(f"Failed to install {package}. Please try installing it manually.")
     return installed_packages
 
-# List of required packages
-required_packages = [
-    "pyttsx3",
-    "speech_recognition",
-    "wikipedia",
-    "pygame",
-    "webbrowser",
-    "os",
-    "requests",
-    "smtplib",
-    "pyautogui",
-    "socket",
-    "json",
-    "random",
-    "pyaudio",
-    "numpy",
-    "nltk"
-]
+# Get package names from user input
+print("Enter the package name(s) you want to install (separate multiple packages with spaces):")
+user_input = input("> ")
+required_packages = user_input.split()  # Split input by spaces into a list
 
 # Install missing packages if necessary
-installed_packages = install_missing_packages(required_packages)
-
-# Import modules only after installation check (optional)
-if all(package in installed_packages for package in required_packages):
-    print("All required packages are installed.")
-    from nltk.sentiment.vader import SentimentIntensityAnalyzer
-    # ... rest of your code using the imported modules ...
+if required_packages:
+    installed_packages = install_missing_packages(required_packages)
+    
+    # Verify installation
+    if installed_packages:
+        print("\nInstallation Summary:")
+        for package in installed_packages:
+            print(f"- {package}: Installed successfully")
+        if len(installed_packages) < len(required_packages):
+            print("\nSome packages failed to install. Missing:")
+            for package in required_packages:
+                if package not in installed_packages:
+                    print(f"- {package}")
+    else:
+        print("No packages were installed successfully.")
 else:
-    print("Some packages failed to install. Please check manually.")
+    print("No packages specified for installation.")
