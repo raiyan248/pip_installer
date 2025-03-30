@@ -1,132 +1,57 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-</head>
-<body>
-    <h1>Python Package Installer Script</h1>
-    <p>
-        This repository contains a Python script designed to dynamically install missing Python packages based on user input. 
-        The script checks if specified packages are installed, attempts to install them using <code>pip</code> if they’re missing, 
-        and provides a summary of the installation process.
-    </p>
+ # Python Package Installer Script
+ This repository contains a Python script designed to dynamically install missing Python packages based on user input. The script checks if specified packages are installed, attempts to install them using pip if they’re missing, and provides a summary of the installation process.  
+ ## Key Features
+ - User Input: Allows users to specify one or more package names to install.
+ - Dynamic Installation: Uses pip to install missing packages instead of relying on a hardcoded list.
+ - Error Handling: Includes try/except blocks to manage installation failures gracefully.
+ - Installation Summary: Provides feedback on which packages were successfully installed and which failed.  
+ ## Changes from Previous Version
+ The original script was modified to enhance usability and flexibility. Below are the key updates:
+ 1. Removed Hardcoded Package List
+    - Original: The script had a predefined list of packages (required_packages) such as pyttsx3, speech_recognition, etc.
+    - Change: Replaced with an interactive prompt where users input package names (e.g., "numpy pandas") separated by spaces.
+    - Reason: Makes the script reusable for any package, not just a specific set.
+ 2. User Input Handling
+    - Addition: Added print("Enter the package name(s)...") and input("> ") to collect package names.
+    - Processing: Uses split() to convert the input string into a list of package names.
+    - Reason: Enables dynamic package specification at runtime.
+ 3. Switched from apt-get to pip
+    - Original: Used subprocess.run(["sudo", "apt-get", "install", "python3-"+package]).
+    - Change: Now uses subprocess.run(["pip", "install", package], check=True).
+    - Reason: pip is the standard Python package manager, more appropriate and widely compatible than apt-get (which is system-specific and requires sudo).
+ 4. Enhanced Error Handling
+    - Addition: Wrapped the subprocess.run call in a try/except block to catch subprocess.CalledProcessError.
+    - Feedback: Prints success or failure messages for each package (e.g., "Successfully installed numpy" or "Failed to install numpy").
+    - Reason: Prevents the script from crashing on installation errors and informs the user of specific failures.
+ 5. Improved Feedback with Installation Summary
+    - Addition: After installation, the script displays a summary listing successfully installed packages and notes any that failed.
+    - Example Output:
+      Installation Summary:
+      - numpy: Installed successfully
+      - pandas: Installed successfully
+    - Reason: Provides clear visibility into the script’s results, especially useful when installing multiple packages.
+ 6. Conditional Execution
+    - Addition: Checks if required_packages is empty and prints "No packages specified for installation" if no input is provided.
+    - Reason: Prevents unnecessary execution and improves user experience.  
+ ## Usage
+ 1. Clone the repository:
+    git clone <repository-url>
+ 2. Navigate to the directory:
+    cd <repository-name>
+ 3. Run the script:
+    python installer_script.py
+ 4. When prompted, enter the package names separated by spaces:
+    Enter the package name(s) you want to install (separate multiple packages with spaces):
+    > numpy pandas
+ Note: Ensure you have pip installed and appropriate permissions. You may need to run with sudo or in a virtual environment depending on your system setup.  
+ ## Requirements
+ - Python 3.x
+ - pip (Python package manager)
+ - Modules used in the script:
+   - importlib (built-in)
+   - subprocess (built-in)  
+ ## Future Improvements
+ - Add support for specifying package versions (e.g., "numpy==1.21.0").
+ - Include an option to use alternative package managers (e.g., conda).
+ - Add logging to save installation results to a file.  
 
-    <div class="section">
-        <h2>Key Features</h2>
-        <ul>
-            <li><strong>User Input</strong>: Allows users to specify one or more package names to install.</li>
-            <li><strong>Dynamic Installation</strong>: Uses <code>pip</code> to install missing packages instead of relying on a hardcoded list.</li>
-            <li><strong>Error Handling</strong>: Includes try/except blocks to manage installation failures gracefully.</li>
-            <li><strong>Installation Summary</strong>: Provides feedback on which packages were successfully installed and which failed.</li>
-        </ul>
-    </div>
-
-    <div class="section">
-        <h2>Changes from Previous Version</h2>
-        <p>The original script was modified to enhance usability and flexibility. Below are the key updates:</p>
-        <ol>
-            <li>
-                <strong>Removed Hardcoded Package List</strong>
-                <ul>
-                    <li><em>Original</em>: The script had a predefined list of packages (<code>required_packages</code>) such as <code>pyttsx3</code>, <code>speech_recognition</code>, etc.</li>
-                    <li><em>Change</em>: Replaced with an interactive prompt where users input package names (e.g., "numpy pandas") separated by spaces.</li>
-                    <li><em>Reason</em>: Makes the script reusable for any package, not just a specific set.</li>
-                </ul>
-            </li>
-            <li>
-                <strong>User Input Handling</strong>
-                <ul>
-                    <li><em>Addition</em>: Added <code>print("Enter the package name(s)...")</code> and <code>input("> ")</code> to collect package names.</li>
-                    <li><em>Processing</em>: Uses <code>split()</code> to convert the input string into a list of package names.</li>
-                    <li><em>Reason</em>: Enables dynamic package specification at runtime.</li>
-                </ul>
-            </li>
-            <li>
-                <strong>Switched from <code>apt-get</code> to <code>pip</code></strong>
-                <ul>
-                    <li><em>Original</em>: Used <code>subprocess.run(["sudo", "apt-get", "install", "python3-"+package])</code>.</li>
-                    <li><em>Change</em>: Now uses <code>subprocess.run(["pip", "install", package], check=True)</code>.</li>
-                    <li><em>Reason</em>: <code>pip</code> is the standard Python package manager, more appropriate and widely compatible than <code>apt-get</code> (which is system-specific and requires sudo).</li>
-                </ul>
-            </li>
-            <li>
-                <strong>Enhanced Error Handling</strong>
-                <ul>
-                    <li><em>Addition</em>: Wrapped the <code>subprocess.run</code> call in a <code>try/except</code> block to catch <code>subprocess.CalledProcessError</code>.</li>
-                    <li><em>Feedback</em>: Prints success or failure messages for each package (e.g., "Successfully installed numpy" or "Failed to install numpy").</li>
-                    <li><em>Reason</em>: Prevents the script from crashing on installation errors and informs the user of specific failures.</li>
-                </ul>
-            </li>
-            <li>
-                <strong>Improved Feedback with Installation Summary</strong>
-                <ul>
-                    <li><em>Addition</em>: After installation, the script displays a summary listing successfully installed packages and notes any that failed.</li>
-                    <li><em>Example Output</em>:
-                        <pre>
-Installation Summary:
-- numpy: Installed successfully
-- pandas: Installed successfully
-                        </pre>
-                    </li>
-                    <li><em>Reason</em>: Provides clear visibility into the script’s results, especially useful when installing multiple packages.</li>
-                </ul>
-            </li>
-            <li>
-                <strong>Conditional Execution</strong>
-                <ul>
-                    <li><em>Addition</em>: Checks if <code>required_packages</code> is empty and prints "No packages specified for installation" if no input is provided.</li>
-                    <li><em>Reason</em>: Prevents unnecessary execution and improves user experience.</li>
-                </ul>
-            </li>
-        </ol>
-    </div>
-
-    <div class="section">
-        <h2>Usage</h2>
-        <ol>
-            <li>Clone the repository:
-                <pre><code>git clone &lt;repository-url&gt;</code></pre>
-            </li>
-            <li>Navigate to the directory:
-                <pre><code>cd &lt;repository-name&gt;</code></pre>
-            </li>
-            <li>Run the script:
-                <pre><code>python installer_script.py</code></pre>
-            </li>
-            <li>When prompted, enter the package names separated by spaces:
-                <pre>
-Enter the package name(s) you want to install (separate multiple packages with spaces):
-&gt; numpy pandas
-                </pre>
-            </li>
-        </ol>
-        <p><strong>Note</strong>: Ensure you have <code>pip</code> installed and appropriate permissions. You may need to run with <code>sudo</code> or in a virtual environment depending on your system setup.</p>
-    </div>
-
-    <div class="section">
-        <h2>Requirements</h2>
-        <ul>
-            <li>Python 3.x</li>
-            <li><code>pip</code> (Python package manager)</li>
-            <li>Modules used in the script:
-                <ul>
-                    <li><code>importlib</code> (built-in)</li>
-                    <li><code>subprocess</code> (built-in)</li>
-                </ul>
-            </li>
-        </ul>
-    </div>
-
-    <div class="section">
-        <h2>Future Improvements</h2>
-        <ul>
-            <li>Add support for specifying package versions (e.g., "numpy==1.21.0").</li>
-            <li>Include an option to use alternative package managers (e.g., <code>conda</code>).</li>
-            <li>Add logging to save installation results to a file.</li>
-        </ul>
-    </div>
-
-</body>
-</html>
