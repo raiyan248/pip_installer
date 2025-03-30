@@ -1,52 +1,30 @@
-import importlib
-import subprocess
+import os
 
-def install_missing_packages(package_list):
-    """
-    Installs missing packages from the provided list using pip.
+def install_linux(package):
+    os.system(f"sudo apt-get install python3-{package} -y")
 
-    Args:
-        package_list (list): A list of strings representing the package names.
+def install_windows(package):
+    os.system(f"pip install {package}")
 
-    Returns:
-        list: A list of successfully installed packages.
-    """
-    installed_packages = []
-    for package in package_list:
-        try:
-            importlib.import_module(package)
-            print(f"Package {package} is already installed.")
-            installed_packages.append(package)
-        except ImportError:
-            print(f"Installing missing package: {package}")
-            try:
-                subprocess.run(["pip", "install", package], check=True)
-                print(f"Successfully installed {package}")
-                installed_packages.append(package)
-            except subprocess.CalledProcessError:
-                print(f"Failed to install {package}. Please try installing it manually.")
-    return installed_packages
+def install_mac(package):
+    os.system(f"brew install {package}")
 
-# Get package names from user input
-print("Enter the package name(s) you want to install (separate multiple packages with spaces):")
-user_input = input("> ")
-required_packages = user_input.split()  # Split input by spaces into a list
-
-# Install missing packages if necessary
-if required_packages:
-    installed_packages = install_missing_packages(required_packages)
+def main():
+    print("Select your operating system:")
+    print("1. Linux")
+    print("2. Windows")
+    print("3. Mac")
+    choice = input("Enter the number corresponding to your OS: ")
+    package = input("Enter the package name: ")
     
-    # Verify installation
-    if installed_packages:
-        print("\nInstallation Summary:")
-        for package in installed_packages:
-            print(f"- {package}: Installed successfully")
-        if len(installed_packages) < len(required_packages):
-            print("\nSome packages failed to install. Missing:")
-            for package in required_packages:
-                if package not in installed_packages:
-                    print(f"- {package}")
+    if choice == "1":
+        install_linux(package)
+    elif choice == "2":
+        install_windows(package)
+    elif choice == "3":
+        install_mac(package)
     else:
-        print("No packages were installed successfully.")
-else:
-    print("No packages specified for installation.")
+        print("Invalid choice. Please select a valid option.")
+
+if __name__ == "__main__":
+    main()
