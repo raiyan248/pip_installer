@@ -25,6 +25,7 @@ def main():
         install_mac(package)
     else:
         print("Invalid choice. Please select a valid option.")
+        main()
 
 if __name__ == "__main__":
     main()
